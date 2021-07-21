@@ -1,7 +1,6 @@
 package com.example.pokeapi.model;
 
-// id,identifier,species_id,height,weight,base_experience,order,is_default
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +13,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Pokemon {
 
     @Id

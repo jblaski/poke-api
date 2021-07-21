@@ -1,5 +1,6 @@
 package com.example.pokeapi;
 
+import com.example.pokeapi.initialisation.PokemonInitialiser;
 import com.example.pokeapi.model.Pokemon;
 import com.example.pokeapi.repository.PokemonRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -27,23 +29,12 @@ public class PokeApiApplication {
 	public void afterStartup() {
 		log.info("Spring has started!");
 
-		Pokemon bulbasaur = Pokemon.builder()
-				.id(1)
-				.identifier("bulbasaur")
-				.speciesId(1)
-				.height(7)
-				.weight(69)
-				.baseExperience(64)
-				.order(1)
-				.isDefault(1)
-				.build();
-
-		pokemonRepository.save(bulbasaur);
-		Optional<Pokemon> byId = pokemonRepository.findById(1);
-		byId.ifPresent(pokemon -> {
-			log.info(pokemon.toString());
+		List<Pokemon> scannedObjects = new PokemonInitialiser("data/pokemon.csv").getScannedObjects();
+		log.info("Started saving {} pokemon...", scannedObjects.size());
+		scannedObjects.forEach(pokemon -> {
+			pokemonRepository.save(pokemon);
 		});
-
+		log.info("...finished saving {} pokemon.", scannedObjects.size());
 	}
 
 }
