@@ -1,16 +1,17 @@
 package com.example.pokeapi.initialisation;
 
 import com.example.pokeapi.model.Pokemon;
+import com.example.pokeapi.repository.PokemonRepository;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+//TODO may as well be a static utility class
 
 @Getter
 @Slf4j
@@ -21,7 +22,6 @@ public class PokemonInitialiser {
 
     public PokemonInitialiser(String path) {
         scannedObjects = new LinkedList<>();
-
         try {
             LineNumberReader lnr = new LineNumberReader(new FileReader(path));
             String headersFound = lnr.readLine();// read the header
@@ -53,7 +53,9 @@ public class PokemonInitialiser {
         }
     }
 
-    public List<Pokemon> getScannedObjects() {
-        return scannedObjects;
+    public void saveScannedObjects(PokemonRepository pokemonRepository) {
+        log.info("Started saving {} pokemon...", scannedObjects.size());
+        scannedObjects.forEach(pokemonRepository::save);
+        log.info("...finished saving {} pokemon.", scannedObjects.size());
     }
 }

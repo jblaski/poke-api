@@ -19,7 +19,7 @@ import java.util.Optional;
 public class PokeApiApplication {
 
 	@Autowired
-	PokemonRepository pokemonRepository;
+	private PokemonRepository pokemonRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PokeApiApplication.class, args);
@@ -27,14 +27,7 @@ public class PokeApiApplication {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void afterStartup() {
-		log.info("Spring has started!");
-
-		List<Pokemon> scannedObjects = new PokemonInitialiser("data/pokemon.csv").getScannedObjects();
-		log.info("Started saving {} pokemon...", scannedObjects.size());
-		scannedObjects.forEach(pokemon -> {
-			pokemonRepository.save(pokemon);
-		});
-		log.info("...finished saving {} pokemon.", scannedObjects.size());
+		new PokemonInitialiser("data/pokemon.csv").saveScannedObjects(pokemonRepository);
 	}
 
 }
