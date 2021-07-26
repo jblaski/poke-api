@@ -27,7 +27,7 @@ public class PokeApiApplication {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void afterStartup() {
-		new PokemonInitialiser("data/pokemon.csv").saveScannedObjects(pokemonRepository);
+		PokemonInitialiser.loadAndSave("data/pokemon.csv", pokemonRepository);
 	}
 
 }
