@@ -11,17 +11,14 @@ import java.io.LineNumberReader;
 import java.util.LinkedList;
 import java.util.List;
 
-//TODO may as well be a static utility class
-
 @Getter
 @Slf4j
 public class PokemonInitialiser {
 
-    private final List<Pokemon> scannedObjects;
     private final static String expectedHeaders = "id,identifier,species_id,height,weight,base_experience,order,is_default";
 
-    public PokemonInitialiser(String path) {
-        scannedObjects = new LinkedList<>();
+    public static void loadAndSave(String path, PokemonRepository pokemonRepository) {
+        List<Pokemon> scannedObjects = new LinkedList<>();
         try {
             LineNumberReader lnr = new LineNumberReader(new FileReader(path));
             String headersFound = lnr.readLine();// read the header
@@ -48,12 +45,13 @@ public class PokemonInitialiser {
                     log.error("Error parsing line", e);
                 }
             });
+            saveScannedObjects(scannedObjects, pokemonRepository);
         } catch (IOException e) {
             log.warn("Error reading lines from file {}: {}", path, e);
         }
     }
 
-    public void saveScannedObjects(PokemonRepository pokemonRepository) {
+    public static void saveScannedObjects(List<Pokemon> scannedObjects, PokemonRepository pokemonRepository) {
         log.info("Started saving {} pokemon...", scannedObjects.size());
         scannedObjects.forEach(pokemonRepository::save);
         log.info("...finished saving {} pokemon.", scannedObjects.size());
